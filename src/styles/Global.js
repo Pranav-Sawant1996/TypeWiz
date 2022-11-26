@@ -15,12 +15,16 @@ body{
     padding:0;
     margin:0;
     transition: all 0.25s linear;
+    overflow-y: scroll;
 }
 
+body::-webkit-scrollbar{
+    display:none;
+}
 .canvas{
     display:grid;
     grid-auto-flow:row;
-    grid-template-auto:auto 1fr auto;
+    grid-template-row:auto 1fr auto;
     min-height:100vh;
     gap:0.5rem;
     padding:1rem;
@@ -145,6 +149,63 @@ margin-right:auto;
     margin-right:auto;
     justify-content:space-between;
     height:70px;
+}
+
+.result-graph{
+    width:1000px;
+    margin:auto;
+}
+.table{
+    width:1000px;
+    margin:auto;
+  
+}
+
+.user-profile{
+    width:1000px;
+    margin:auto;
+    display:flex;
+    border: 1px solid pink;
+    border-radius: 20px;
+    padding:10px; 
+}
+
+.user{
+    display:flex;
+    width:50%;
+    justif-content:center;
+    margin-top:10px;
+    margin-bottom:10px;
+    padding:10px;
+    border-right: 1px solid;
+}
+
+.picture{
+    width:50%;
+   
+
+}
+
+.info{
+    width:50%;
+    margin-top:1rem;
+    font-size:1rem;
+    text-align:center;
+    padding:1rem;
+}
+
+.total-times{
+    width:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.loading{
+    display:flex;
+    min-height:100vh;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
 }
 
 `;

@@ -10,12 +10,16 @@ import {
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Graph from "../components/Graph";
+import { useTheme } from "../context/Theme";
 import { auth, db } from "../FirebaseConfig";
+import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 
 const UserPage = () => {
   const [data, setData] = useState([]);
   const [user, loading] =useAuthState(auth)
   const [graphData,setGraphData]=useState([])
+  const {theme}=useTheme()
+  const [dataLoading,setDataLoading]=useState(true)
 
 
   const fetchData = () => {
@@ -37,6 +41,7 @@ const UserPage = () => {
         });
         setData(tempData);
         setGraphData(tempGraphData.reverse())
+        setDataLoading(false)
       });
   };
  
@@ -47,43 +52,68 @@ const UserPage = () => {
     }
   }, [loading]);
 
-  if(loading){
-    return <CircularProgress size={200} />
+  if(loading || dataLoading){
+    return <div className="loading" >
+      <CircularProgress size={200} style={{color:theme.title}} />
+    </div> 
+      
   }
 
   return (
     <div className="canvas">
+      <div className="user-profile">
+        <div className="user">
+        <div className="picture">
+          <AccountCircleSharpIcon style={{display:'block', transform:'scale(5)',  margin:'auto', marginTop:'3rem'}}  />
+        </div>
+        <div className="info">
+          <div className="email">
+            {user.email}
+          </div>
+          <div className="joined-on">
+            {user.metadata.creationTime}
+          </div>
+        </div>
+        </div>
+        <div className="total-times">
+          <span>
+            No of tests taken - {data.length}
+          </span>
+        </div>
+      </div>
+      <div  className="result-graph">
       <Graph graphData={graphData} type='date' />
-      {/* <GlobalStyles  /> */}
+      </div>
+
       <div className="table">
-        <TableContainer>
+        <TableContainer style={{maxHeight:'30rem'}} >
           <TableHead>
             <TableRow>
-              <TableCell>wpm</TableCell>
+              <TableCell style={{color:theme.title, textAlign:'center'}} >wpm</TableCell>
 
-              <TableCell>accuracy</TableCell>
+              <TableCell style={{color:theme.title, textAlign:'center'}}>accuracy</TableCell>
 
-              <TableCell>characters</TableCell>
+              <TableCell style={{color:theme.title, textAlign:'center'}}>characters</TableCell>
 
-              <TableCell>date</TableCell>
+              <TableCell style={{color:theme.title, textAlign:'center'}}>date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((i) => (
               <TableRow>
-                <TableCell>
+                <TableCell style={{color:theme.title, textAlign:'center'}}>
                   {i.wpm}
                 </TableCell>
 
-                <TableCell>
+                <TableCell style={{color:theme.title, textAlign:'center'}}>
                   {i.accuracy}
                 </TableCell>
 
-                <TableCell>
+                <TableCell style={{color:theme.title, textAlign:'center'}}>
                   {i.characters}
                 </TableCell>
 
-                <TableCell>
+                <TableCell style={{color:theme.title, textAlign:'center'}}>
                   {i.timeStamp.toDate().toLocaleString()}
                 </TableCell>
               </TableRow>
