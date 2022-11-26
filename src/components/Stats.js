@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { useAlert } from '../context/AlertMessage'
+import { auth, db } from '../FirebaseConfig'
 import Graph from './Graph'
 
 const Stats = ({wpm,accuracy,graphData,correctChars,incorrectChars,missedChars,extraChars}) => {
+  const [user]=useAuthState(auth)
+  const {setAlert}=useAlert()
   var timeSet=new Set()
   const newGraph=graphData.filter((i)=>{
     if(!timeSet.has(i[0])){
@@ -9,6 +14,49 @@ const Stats = ({wpm,accuracy,graphData,correctChars,incorrectChars,missedChars,e
       return i
     }
   })
+  
+
+  const pushResultToDB= async()=>{
+const resultRef=db.collection('Results')
+const {uid}=auth.currentUser
+if(!isNaN(accuracy)){
+  // push results to db
+ await resultRef.add({
+    userId:uid,
+    wpm:wpm,
+    accuracy:accuracy,
+    characters:`${correctChars}/${incorrectChars}/${missedChars}/${extraChars}`,
+    timeStamp: new Date()
+  }).then((res)=>{
+    setAlert({
+      open:true,
+      type:'success',
+      message:'Results saved'
+    })
+  })
+}
+else{
+  setAlert({
+    open:true,
+    type:'error',
+    message:'Invalid test'
+  })
+}
+
+  }
+
+  useEffect(()=>{
+    if(user){
+      pushResultToDB()
+    }
+    else{
+       setAlert({
+        open:true,
+        type:'warning',
+        message:'login to save results!'
+       })
+    }
+  },[])
   return (
     <div className='stats-box'>
         <div className='left-stats'>

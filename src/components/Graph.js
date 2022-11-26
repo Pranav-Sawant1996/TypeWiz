@@ -1,4 +1,4 @@
-import { borderColor } from '@mui/system'
+
 import React from 'react'
 import {Line} from 'react-chartjs-2'
 
@@ -25,15 +25,15 @@ ChartJS.register(
     Legend
 )
 
-const Graph = ({graphData}) => {
+const Graph = ({graphData,type}) => {
     const {theme}=useTheme()
   return (
     <div>
-{console.log(graphData)}
+{/* {console.log(graphData)} */}
 <Line
 data={
     {
-        labels:graphData.map(i=>i[0]+1),   //x-axis
+        labels:graphData.map(i=>(type==='date')?(i[0].toDate().toLocaleString()): (i[0]+1)),   //x-axis
         datasets:[           //y-axis
             {       
                 data:graphData.map(i=>i[1]),

@@ -3,7 +3,7 @@ import { red } from "@mui/material/colors"
 const darkTheme={
     label:'Dark',
     background:'black',
-    title:'white',
+    title:'pink',
     typeBoxText:'grey',
     stats:'green'
 }

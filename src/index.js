@@ -4,14 +4,20 @@ import "./index.css";
 import App from "./App";
 import { TestModeContextProvider } from "./context/TestMode";
 import { ThemeContextProvider } from "./context/Theme";
+import { BrowserRouter } from "react-router-dom";
+import { AlertContextProvider } from "./context/AlertMessage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ThemeContextProvider>
-      <TestModeContextProvider>
-        <App />
-      </TestModeContextProvider>
+      <AlertContextProvider>
+        <TestModeContextProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </TestModeContextProvider>
+      </AlertContextProvider>
     </ThemeContextProvider>
   </React.StrictMode>
 );
