@@ -69,6 +69,7 @@ return
 
   //logic for tab/enter
   if(e.keyCode===9 || e.keyCode===13){
+    console.log('enter')
     e.preventDefault()
 reset()
 setOpenDialog(false)
@@ -112,6 +113,7 @@ return
       }
       e.preventDefault()
       setOpenDialog(true)
+      handleDialogEvents()
       return
     }
 
@@ -309,7 +311,7 @@ return
       {/* <UpperMenu timer={countDown} /> */}
       {testOver?(<Stats wpm={WPM()} accuracy={accuracy()} graphData={graphData} correctChars={correctChars} incorrectChars={incorrectChars} missedChars={missedChars} extraChars={extraChars} />):(
         
-        <div className='type-box'>
+        <div className='type-box' onClick={focusInput}>
       <UpperMenu timer={countDown} currentWordIndex={currentWordIndex} />
     <div className='words'>
       
