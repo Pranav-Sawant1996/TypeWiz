@@ -21,6 +21,7 @@ body{
 body::-webkit-scrollbar{
     display:none;
 }
+
 .canvas{
     display:grid;
     grid-auto-flow:row;
@@ -35,7 +36,7 @@ body::-webkit-scrollbar{
 .type-box{
     display:block;
     max-width:1000px;  
-    height:180px;
+    height:188px;
     margin-left:auto;
     margin-right:auto;
     overflow:hidden;
@@ -103,15 +104,23 @@ body::-webkit-scrollbar{
     color:${({theme})=>theme.typeBoxText}
 }
 
-.time-modes{
+.time-modes, .word-mode {
     display:flex;
    
 }
 
-.time{
+.time, .word{
     margin-right:10px;
 }
 .time:hover{
+    color:${({theme})=>theme.title};
+    cursor:pointer;
+}
+.word:hover{
+    color:${({theme})=>theme.title};
+    cursor:pointer;
+}
+.mode:hover{
     color:${({theme})=>theme.title};
     cursor:pointer;
 }

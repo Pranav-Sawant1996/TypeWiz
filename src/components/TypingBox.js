@@ -2,17 +2,26 @@ import React, {createRef, useEffect, useRef, useState, useMemo} from 'react'
 import { useTestMode } from '../context/TestMode'
 import UpperMenu from './UpperMenu'
 import Stats from './Stats'
+import { Dialog, DialogTitle } from '@material-ui/core'
 var randomWords= require('random-words')
 
 
 const TypingBox = ({}) => {
+  const {testTime,testMode, testWords}=useTestMode()
   const [currentWordIndex,setCurrentWordIndex]=useState(0)
   const [currentCharIndex,setCurrentCharIndex]=useState(0)
   const inputTextRef=useRef(null)
-  const [countDown,setCountDown]=useState(5)
+  const [countDown,setCountDown]=useState(()=>{
+    if(testMode==='words'){
+      return 180
+    }
+    else{
+      return testTime
+    }
+  })
   const [testStart,setTestStart]=useState(false)
   const [testOver,setTestOver]=useState(false)
-  const {testTime}=useTestMode()
+ 
   const [timeId,setTimeId]= useState(null)
   const [correctChars,setCorrectChars]=useState(0)
   const [incorrectChars,setIncorrectChars]=useState(0)
@@ -20,6 +29,7 @@ const TypingBox = ({}) => {
   const [missedChars,setMissedChars]=useState(0)
   const [correctWords,setCorrectWords]=useState(0)
   const [graphData,setGraphData]=useState([])
+  const [openDialog,setOpenDialog]=useState(false)
 
 
   const [wordsArray, setWordsArray]=useState(()=>{
@@ -46,7 +56,65 @@ const TypingBox = ({}) => {
   // const wordSpanRef=Array(words.length).fill(0).map(i=>createRef(null))
   // console.log(wordSpanRef)
   // console.log(inputTextRef)
+
+ const handleDialogEvents =(e)=>{
+  //dialog box logic
+  //logic for space
+  if(e.keyCode===32){
+e.preventDefault()
+redoTest()
+setOpenDialog(false)
+return
+  }
+
+  //logic for tab/enter
+  if(e.keyCode===9 || e.keyCode===13){
+    e.preventDefault()
+reset()
+setOpenDialog(false)
+return
+  }
+
+  e.preventDefault()
+  setOpenDialog(false)
+  focusInput()
+  startTime()
+ }
+
+ const redoTest= ()=>{
+  setCurrentCharIndex(0)
+  setCurrentWordIndex(0)
+  setTestStart(false)
+  setTestOver(false)
+  clearInterval(timeId)
+  // setTestStart(true)
+  setCountDown(testTime)
+  if(testMode==='words'){
+ setCountDown(180)
+  }
+  setGraphData([])
+   setCorrectChars(0)
+   setIncorrectChars(0)
+   setMissedChars(0)
+   setMissedChars(0)
+   setExtraChars(0)
+   setCorrectWords(0)
+ resetWordSpanRefClassNames()
+ focusInput()
+ }
+
+
   const handleKeyDown= (e)=>{
+    //logic for tab
+    if(e.keyCode===9){
+      if(testStart){
+        clearInterval(timeId)
+      }
+      e.preventDefault()
+      setOpenDialog(true)
+      return
+    }
+
     if(!testStart){
       startTime()
       setTestStart(true)
@@ -59,6 +127,12 @@ const TypingBox = ({}) => {
     // space logic
     // console.log('key',e)
     if(e.keyCode===32){
+      if(currentWordIndex===wordsArray.length-1){
+        clearInterval(timeId)
+        setTestOver(true)
+        return
+      }
+
       const correctChars=wordSpanRef[currentWordIndex].current.querySelectorAll('.correct')
       const incorrectChars=wordSpanRef[currentWordIndex].current.querySelectorAll('.incorrect')
       setMissedChars(missedChars+(allChildrenSpans.length-(correctChars.length+incorrectChars.length)))
@@ -149,7 +223,7 @@ const TypingBox = ({}) => {
   }
 
   const WPM= ()=>{
-    return Math.round((correctChars/5)/(testTime/60))
+    return Math.round((correctChars/5)/(((graphData[graphData.length-1][0])+1)/60))
   }
 
   const accuracy= ()=>{
@@ -164,24 +238,41 @@ const TypingBox = ({}) => {
     clearInterval(timeId)
     // setTestStart(true)
     setCountDown(testTime)
-   let random=randomWords(100)
+    if(testMode==='words'){
+      let random=randomWords(testWords)
    setWordsArray(random)
+   setCountDown(180)
+    }
+    else{
+      let random=randomWords(100)
+      setWordsArray(random)
+
+    }
+   setGraphData([])
+   setCorrectChars(0)
+   setIncorrectChars(0)
+   setMissedChars(0)
+   setMissedChars(0)
+   setExtraChars(0)
+   setCorrectWords(0)
    resetWordSpanRefClassNames()
    focusInput()
   }
 
   const focusInput= ()=>{
+    console.log('hii')
     inputTextRef.current.focus()
+    wordSpanRef[0].current.childNodes[0].className='char current'
     // console.log(wordSpanRef[1].current)
   }
 
   useEffect(()=>{
     reset()
-  },[testTime])
+  },[testTime,testMode,testWords])
 
   useEffect(()=>{
      focusInput()
-     wordSpanRef[0].current.childNodes[0].className='char current'
+    //  wordSpanRef[0].current.childNodes[0].className='char current'
   },[])
 
   //timer
@@ -193,7 +284,8 @@ const TypingBox = ({}) => {
 
         setCorrectChars((correctChars)=>{
           setGraphData((data)=>{
-            return [...data,[testTime-prevCountDown,Math.round((correctChars/5)/((testTime-prevCountDown+1)/60))]]
+            const startTime= (testMode==='words')?(180):testTime
+            return [...data,[startTime-prevCountDown,Math.round((correctChars/5)/((startTime-prevCountDown+1)/60))]]
           })
           return correctChars
         })
@@ -218,7 +310,7 @@ const TypingBox = ({}) => {
       {testOver?(<Stats wpm={WPM()} accuracy={accuracy()} graphData={graphData} correctChars={correctChars} incorrectChars={incorrectChars} missedChars={missedChars} extraChars={extraChars} />):(
         
         <div className='type-box'>
-      <UpperMenu timer={countDown} />
+      <UpperMenu timer={countDown} currentWordIndex={currentWordIndex} />
     <div className='words'>
       
       {words.map((word,index)=>(
@@ -238,6 +330,19 @@ const TypingBox = ({}) => {
     ref={inputTextRef} 
     onKeyDown={(e)=>(handleKeyDown(e))}
     /> 
+
+    <Dialog
+    open={openDialog}
+    onKeyDown={handleDialogEvents}
+    >
+      <DialogTitle>
+        <div className='instruction'> Press space to redo</div>
+        <div className='instruction'> Press Tab/Enter to restart</div>
+        <div className='instruction'>Press any other key to exit</div>
+      </DialogTitle>
+    </Dialog>
+
+
     </div>
   )
 }
