@@ -155,6 +155,9 @@ return
 
     wordSpanRef[currentWordIndex+1].current.childNodes[0].className='char current'
 
+      if(currentWordIndex !=0 && wordSpanRef[currentWordIndex+1].current.offsetLeft < wordSpanRef[currentWordIndex].current.offsetLeft ){     //offsetLeft this will give the distance of the word form the left of screen
+        wordSpanRef[currentWordIndex].current.scrollIntoView()     // scrollIntoView() this will print the current word at the top of particular div 
+      }
       setCurrentWordIndex(currentWordIndex+1)
       setCurrentCharIndex(0)
 
@@ -262,7 +265,7 @@ return
   }
 
   const focusInput= ()=>{
-    console.log('hii')
+   
     inputTextRef.current.focus()
     wordSpanRef[0].current.childNodes[0].className='char current'
     // console.log(wordSpanRef[1].current)
@@ -309,7 +312,7 @@ return
   return (
     <div>
       {/* <UpperMenu timer={countDown} /> */}
-      {testOver?(<Stats wpm={WPM()} accuracy={accuracy()} graphData={graphData} correctChars={correctChars} incorrectChars={incorrectChars} missedChars={missedChars} extraChars={extraChars} />):(
+      {testOver?(<Stats reset={reset} wpm={WPM()} accuracy={accuracy()} graphData={graphData} correctChars={correctChars} incorrectChars={incorrectChars} missedChars={missedChars} extraChars={extraChars} />):(
         
         <div className='type-box' onClick={focusInput}>
       <UpperMenu timer={countDown} currentWordIndex={currentWordIndex} />
@@ -331,11 +334,21 @@ return
     className='hidden-text' 
     ref={inputTextRef} 
     onKeyDown={(e)=>(handleKeyDown(e))}
+   
     /> 
 
     <Dialog
+    PaperProps={{
+      style:{
+        backgroundColor:'transparent',
+        boxShadow:'none'
+      }
+    }}
     open={openDialog}
     onKeyDown={handleDialogEvents}
+    style={{
+      backdropFilter:'blur(2px)'
+    }}
     >
       <DialogTitle>
         <div className='instruction'> Press space to redo</div>

@@ -150,16 +150,29 @@ margin-right:auto;
 .right-stats{
     width:70%;
 }
-
-.footer, .header{
+.header{
     display:flex;
    width:1000px;
     margin-left:auto;
     margin-right:auto;
     justify-content:space-between;
+    align-items:center;
     height:70px;
 }
-
+.footer{
+    display:flex;
+    flex-direction:column; 
+   width:1000px;
+    margin-left:auto;
+    margin-right:auto;
+    align-items:center;
+    height:70px;
+}
+.actual-footer{
+    display:flex;
+    justify-content:space-between;
+    width:1000px;
+}
 .result-graph{
     width:1000px;
     margin:auto;
@@ -215,6 +228,25 @@ margin-right:auto;
     justify-content:center;
     align-items:center;
     text-align:center;
+}
+
+.instruction{
+    color:${({theme})=>theme.title};
+}
+
+.hint{
+    kbd{
+        background-color:${({theme})=>theme.title};
+        color:${({theme})=>theme.background};
+        padding:3px;
+        border-radius:4px;
+    }
+}
+
+.reset-btn  {
+    transform:scale(1.5);
+    margin:auto;
+    margin-top:20px;
 }
 
 `;

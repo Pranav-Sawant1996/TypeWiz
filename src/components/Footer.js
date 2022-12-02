@@ -13,6 +13,14 @@ const Footer = () => {
   }
   return (
     <div className='footer'>
+      <div className='instructions'>
+        <div className='hint'>
+        Press <kbd>Tab</kbd> to open commands
+        </div>
+      </div>
+
+      <div className='actual-footer'>
+
     <div className='footer-links'>
 links
     </div>
@@ -28,6 +36,7 @@ links
     }}
     />
     </div>
+      </div>
     </div>
   )
 }

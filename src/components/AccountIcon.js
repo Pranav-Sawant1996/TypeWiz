@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core'
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { auth } from '../FirebaseConfig';
+import { auth, db } from '../FirebaseConfig';
 import {useAuthState} from 'react-firebase-hooks/auth'
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
@@ -84,13 +84,19 @@ const AccountIcon = () => {
     
     const googleProvider = new GoogleAuthProvider()
     const signInWithGoogle=()=>{
-        signInWithPopup(auth, googleProvider).then((res)=>{
-            setAlert({
-                open:true,
-                type:'success',
-                message:'Logged in'
+        signInWithPopup(auth, googleProvider).then(async(res)=>{
+            const username=res.user.displayName
+            // console.log(username)
+            const ref = await db.collection('username').doc(username).set({
+                uid: res.user.uid
+            }).then((response)=>{ 
+                setAlert({
+                    open:true,
+                    type:'success',
+                    message:'Logged in'
+                })
+                handleClose()
             })
-            handleClose()
         }).catch((err)=>{
             console.log(err)
             setAlert({

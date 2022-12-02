@@ -1,7 +1,7 @@
 import React from 'react'
 import { TextField,Button, Box } from '@mui/material'
 import { useState } from 'react'
-import { auth } from '../FirebaseConfig'
+import { auth, db } from '../FirebaseConfig'
 import errorMapping from '../utils/errorMessages'
 import { useAlert } from '../context/AlertMessage'
 import { useTheme } from '../context/Theme'
@@ -12,9 +12,17 @@ const [password,setPassword]=useState('')
 const [confirmPassword,setConfirmPassword]=useState('')
 const {setAlert}=useAlert()
 const {theme}=useTheme()
+const [username,setUsername]=useState('')
 
-const handleSubmit= ()=>{
-if(!email || !password || !confirmPassword){
+const checkUsernameAvaliability = async()=>{
+  const ref= db.collection('username').doc(`${username}`)
+  const response= await ref.get()    // if response has something that means there is a document present with same username
+  // console.log(response)
+  return !response.exists      // .exists  will return a boolean value true is there is any document present by the same username  !exists will return false if any document is present by same username
+}
+
+const handleSubmit= async()=>{
+if(!username || !email || !password || !confirmPassword){
     // alert('Enter all details')
     setAlert({
         open:true,
@@ -33,28 +41,41 @@ if(password!==confirmPassword){
 
     return
 }
-
-auth.createUserWithEmailAndPassword(email,password).then((ok)=>{
-    // alert('user created')
-    setAlert({
-        open:true,
-        type:'success',
-        message: 'Signup successfull'
-      })
-
-    handleClose()
-}).catch((err)=>{
-    // console.log(err)
-    // console.log('error code',err.code)
-    // console.log('error message',err.message)
-    // alert(errorMapping[err.code])
-    setAlert({
-        open:true,
-        type:'error',
-        message: errorMapping[err.code]  || 'some error occured'
-      })
-
-})
+if(await checkUsernameAvaliability()){ 
+  // console.log('user name not taken')
+  auth.createUserWithEmailAndPassword(email,password).then(async(refrence)=>{
+      // alert('user created')
+      const ref = await db.collection('username').doc(`${username}`).set({
+        uid: refrence.user.uid
+    }).then((response)=>{
+        setAlert({
+            open: true,
+            type: 'success',
+            message: 'Account created'
+        });
+        handleClose();
+    });   
+  }).catch((err)=>{
+      // console.log(err)
+      // console.log('error code',err.code)
+      // console.log('error message',err.message)
+      // alert(errorMapping[err.code])
+      setAlert({
+          open:true,
+          type:'error',
+          message: errorMapping[err.code]  || 'some error occured'
+        })
+  
+  })
+}
+else{
+  // console.log('username taken')
+  setAlert({
+            open:true,
+            type:'warning',
+            message: 'username already taken'
+          })
+}
 }
 
   return (
@@ -70,6 +91,25 @@ auth.createUserWithEmailAndPassword(email,password).then((ok)=>{
            
         }}
         >
+          <TextField
+        variant='outlined'
+        type='text'
+        label='Enter Username'
+        InputLabelProps={{
+          style:{
+            color:theme.title
+          }
+        }}
+        InputProps={{
+          style:{
+            color:theme.title
+          }
+        }}
+        onChange={(e)=>setUsername(e.target.value)}
+        >
+
+        </TextField>
+
         <TextField
         variant='outlined'
         type='email'

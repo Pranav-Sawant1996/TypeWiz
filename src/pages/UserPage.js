@@ -20,12 +20,14 @@ const UserPage = () => {
   const [graphData,setGraphData]=useState([])
   const {theme}=useTheme()
   const [dataLoading,setDataLoading]=useState(true)
+  const [username,setUsername]=useState('')
 
 
   const fetchData = () => {
     const resultRef = db.collection("Results");
     let tempData = [];
     let tempGraphData =[]
+    const tempUsername=''
     // console.log(auth.currentUser)
     const { uid } = auth.currentUser;
     // console.log(uid)
@@ -37,7 +39,8 @@ const UserPage = () => {
         snapshot.docs.forEach((doc) => {
           tempData.push({ ...doc.data() });
           tempGraphData.push([doc.data().timeStamp, doc.data().wpm])
-          // console.log(tempData)
+          console.log(tempData)
+          // tempUsername=doc.data().username
         });
         setData(tempData);
         setGraphData(tempGraphData.reverse())
