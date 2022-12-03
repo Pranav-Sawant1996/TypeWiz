@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Graph from '../components/Graph'
+import { useTheme } from '../context/Theme'
 import { auth, db } from '../FirebaseConfig'
 
 const ComparePage = () => {
@@ -10,6 +11,8 @@ const ComparePage = () => {
     const [compareUserData,setCompareUserData]=useState([])
     const [loggenInUserGraphData,setLoggedInUserGraphData]=useState([])
     const [compareUserGraphData,setCompareUserGraphData]=useState([])
+    const [loggedInUsername,setLoggedInUsername]=useState('')
+    const {theme}=useTheme()
 
     const getUID=  async()=>{
         const ref= db.collection('username').doc(`${username}`)
@@ -57,6 +60,15 @@ const ComparePage = () => {
           }); 
         });
 
+        const name=db.collection('username')
+        name.where("uid", "==", uid).get().then((snapshot)=>{
+          // console.log(snapshot)
+          snapshot.docs.forEach((doc) => {
+          setLoggedInUsername(doc.id)
+            
+          });
+          });
+
     }
 
     useEffect(()=>{
@@ -65,9 +77,17 @@ const ComparePage = () => {
 
 
   return (
-    <div>
+    <div className='compare-graph'>
+      <div className='compare-graph-user' >
+
+        <h1>{loggedInUsername}</h1>
         <Graph graphData={loggenInUserGraphData} type='date' />
+      </div>
+      <div className='compare-graph-user'>
+
+        <h1>{username} </h1>
         <Graph graphData={compareUserGraphData} type='date'/>
+      </div>
 
     </div>
   )

@@ -36,7 +36,11 @@ const Graph = ({graphData,type}) => {
 
 data={
     {
-        labels:graphData.map(i=>(type==='date')?(i[0].toDate().toLocaleString()): (i[0]+1)),   //x-axis
+        labels:graphData.map(i=>(type==='date')?(i[0].toDate().toLocaleString("en-US",{
+            year: "numeric",
+    month: "short",
+    day: "numeric"
+        })): (i[0]+1)),   //x-axis
         datasets:[           //y-axis
             {       
                 data:graphData.map(i=>i[1]),

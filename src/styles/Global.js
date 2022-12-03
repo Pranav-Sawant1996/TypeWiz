@@ -249,4 +249,20 @@ margin-right:auto;
     margin-top:20px;
 }
 
+.compare-graph{
+    width:600px;
+    margin:auto;
+    
+}
+
+.compare-graph-user{
+    display:flex;
+    flex-direction:column;
+    border:1px solid ${({theme})=>theme.title};
+    justify-content:center;
+    align-items:center;
+    padding:4px;
+    margin-top:10px;
+}
+
 `;
