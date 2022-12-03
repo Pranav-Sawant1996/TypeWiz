@@ -61,7 +61,7 @@ const ComparePage = () => {
 
     useEffect(()=>{
         getData()
-    },[ ])
+    },[])
 
 
   return (

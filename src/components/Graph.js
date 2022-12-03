@@ -11,7 +11,8 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Chart
 } from 'chart.js'
 // import { useTheme } from 'styled-components'
 
@@ -27,10 +28,12 @@ ChartJS.register(
 
 const Graph = ({graphData,type}) => {
     const {theme}=useTheme()
+    Chart.defaults.color=theme.title
   return (
     <div>
 {/* {console.log(graphData)} */}
 <Line
+
 data={
     {
         labels:graphData.map(i=>(type==='date')?(i[0].toDate().toLocaleString()): (i[0]+1)),   //x-axis
@@ -38,7 +41,8 @@ data={
             {       
                 data:graphData.map(i=>i[1]),
                 label:'wpm',
-                borderColor: theme.title
+                borderColor: theme.title,
+                // backdropColor:'rgba(255,255,255,0.75)'
             }
         ]        
     }

@@ -55,7 +55,7 @@ const CompareButton = () => {
     const checkUsernameAvaliability = async()=>{
         const ref= db.collection('username').doc(`${username}`)
         const response= await ref.get()    
-        // console.log(response)
+        console.log(response.data().username)
         if(user.uid=== response.data().uid){
           return false
         }

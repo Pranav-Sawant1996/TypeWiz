@@ -5,22 +5,34 @@ const darkTheme={
     background:'black',
     title:'pink',
     typeBoxText:'grey',
-    stats:'green'
+    
 }
 
-const redTheme={
-    label:'Red',
-    background:'red',
-    title:'white',
-    typeBoxText:'blue',
-    stats:'purple'
-}
+
+ const paperTheme={
+    label:'Paper',
+    background:'#eeeeee',
+    title:'#444444',
+    typeBoxText:'#b2b2b2',
+   
+ }
+
+ const brownTheme={
+    label:'Brown',
+    background:'#a86948',
+    title:'#ffe4bc',
+    typeBoxText:'#81482b',
+
+ }
 
 export const themeOptions=[
     {
         value: darkTheme, label:'Dark'
     },
     {
-        value: redTheme, label:'Red'
+        value: paperTheme, label:'Paper'
+    },
+    {
+        value: brownTheme, label:'Brown'
     }
 ]

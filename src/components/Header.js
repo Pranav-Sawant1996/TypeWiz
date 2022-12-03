@@ -8,7 +8,7 @@ const Header = () => {
   return (
     <div className='header'>
         <div className='logo' style={{display:'flex', alignItems:'center'}}>
-        <span style={{display:'block', marginRight:'20px'}}>LOGO</span>
+        <span style={{display:'block', marginRight:'20px'}}><b>TypeWiz</b></span>
         <CompareButton />
         </div>
         <div className='icon'>

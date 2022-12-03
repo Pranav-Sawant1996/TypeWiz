@@ -27,10 +27,10 @@ const UserPage = () => {
     const resultRef = db.collection("Results");
     let tempData = [];
     let tempGraphData =[]
-    const tempUsername=''
+    
     // console.log(auth.currentUser)
     const { uid } = auth.currentUser;
-    // console.log(uid)
+    console.log(uid)
     resultRef
       .where("userId", "==", uid).orderBy('timeStamp','desc')
       .get()
@@ -39,16 +39,35 @@ const UserPage = () => {
         snapshot.docs.forEach((doc) => {
           tempData.push({ ...doc.data() });
           tempGraphData.push([doc.data().timeStamp, doc.data().wpm])
-          console.log(tempData)
+          // console.log(tempData)
           // tempUsername=doc.data().username
         });
         setData(tempData);
         setGraphData(tempGraphData.reverse())
         setDataLoading(false)
       });
-  };
- 
 
+      const name=db.collection('username')
+      // console.log(name)
+      // const tempUsername=''
+      name.where("uid", "==", uid).get().then((snapshot)=>{
+        // console.log(snapshot)
+        snapshot.docs.forEach((doc) => {
+          // console.log(doc.data())
+          // console.log(doc.id)
+        
+          setUsername(doc.id)
+          // console.log(tempData)
+          // tempUsername=doc.data().username
+        });
+        });
+        
+        console.log(username)
+      };
+      
+  
+ 
+// console.log(user)
   useEffect(() => {
     if(!loading){
       fetchData();
@@ -71,7 +90,7 @@ const UserPage = () => {
         </div>
         <div className="info">
           <div className="email">
-            {user.email}
+            {username}
           </div>
           <div className="joined-on">
             {user.metadata.creationTime}
@@ -85,7 +104,7 @@ const UserPage = () => {
         </div>
       </div>
       <div  className="result-graph">
-      <Graph graphData={graphData} type='date' />
+      <Graph graphData={graphData} type='date' style={{color:theme.title}} />
       </div>
 
       <div className="table">
